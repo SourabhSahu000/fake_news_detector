@@ -1,0 +1,34 @@
+{
+    "model_architecture": "TF-IDF (Unigrams + Bigrams) + Logistic Regression (C=5.0, balanced)",
+    "cv_5fold_accuracy": 79.09,
+    "test_accuracy": 82.14,
+    "total_dataset_size": 110,
+    "real_samples": 60,
+    "fake_samples": 50,
+    "classes": [
+        "FAKE",
+        "REAL"
+    ],
+    "confusion_matrix": [
+        [
+            8,
+            5
+        ],
+        [
+            0,
+            15
+        ]
+    ],
+    "detailed_metrics": {
+        "REAL": {
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1_score": 0.857
+        },
+        "FAKE": {
+            "precision": 1.0,
+            "recall": 0.615,
+            "f1_score": 0.762
+        }
+    }
+}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fake News Detector | Natural Language Processing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="badge-pill">
+                <span class="status-indicator live"></span>
+                <span>AI NLP Engine Online</span>
+                {% if metrics and metrics.test_accuracy %}
+                <span class="badge-separator">•</span>
+                <span>{{ metrics.test_accuracy }}% Verified Accuracy</span>
+                {% endif %}
+            </div>
+            <h1>AI Fake News Detector</h1>
+            <p class="subtitle">Analyze news headlines and articles in real time using Natural Language Processing and Machine Learning to verify journalistic authenticity.</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-card">
+            <!-- Example Prompts -->
+            <div class="examples-bar">
+                <span class="examples-label">Try an example:</span>
+                <div class="examples-list">
+                    <button type="button" class="example-chip chip-real" onclick="loadExample(0)">🔭 Space Discovery (Real)</button>
+                    <button type="button" class="example-chip chip-fake" onclick="loadExample(1)">👽 Alien Telepathy (Fake)</button>
+                    <button type="button" class="example-chip chip-real" onclick="loadExample(2)">📈 Central Bank (Real)</button>
+                    <button type="button" class="example-chip chip-fake" onclick="loadExample(3)">🧪 Miracle Salt Cure (Fake)</button>
+                    <button type="button" class="example-chip chip-real" onclick="loadExample(4)">🛡️ Linux Security Patch (Real)</button>
+                    <button type="button" class="example-chip chip-fake" onclick="loadExample(5)">🛸 Mars Android Base (Fake)</button>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <textarea id="newsInput" placeholder="Paste a news article, headline, or claim here to evaluate its credibility... (Ctrl + Enter to run)" autofocus></textarea>
+                <div class="input-meta">
+                    <div class="counts">
+                        <span id="wordCount">0 words</span>
+                        <span class="dot">•</span>
+                        <span id="charCount">0 characters</span>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="button" class="btn-text" onclick="pasteFromClipboard()">📋 Paste</button>
+                        <button type="button" class="btn-text" onclick="clearInput()">🗑️ Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="action-bar">
+                <button id="checkBtn" class="btn-primary" onclick="checkNews()">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text-main">Verify Credibility</span>
+                </button>
+            </div>
+
+            <!-- Loader -->
+            <div id="loader" class="loader-container hidden">
+                <div class="spinner"></div>
+                <p>Extracting linguistic features & evaluating NLP pipeline...</p>
+            </div>
+
+            <!-- Analysis Output -->
+            <div id="resultSection" class="result-container hidden">
+                <div class="result-header">
+                    <div>
+                        <div class="sub-heading">Classification Verdict</div>
+                        <h2 id="predictionResult" class="verdict-title">-</h2>
+                    </div>
+                    <div class="confidence-badge">
+                        <span class="confidence-label">Confidence</span>
+                        <span id="confidenceScore" class="confidence-value">0%</span>
+                    </div>
+                </div>
+
+                <!-- Probability Distribution Bar -->
+                <div class="distribution-card">
+                    <div class="distribution-header">
+                        <span>Authenticity Probability Spectrum</span>
+                        <span id="distSummary" class="dist-meta">REAL: 0% | FAKE: 0%</span>
+                    </div>
+                    <div class="spectrum-bar">
+                        <div id="realBar" class="bar-segment bar-real" style="width: 50%;"></div>
+                        <div id="fakeBar" class="bar-segment bar-fake" style="width: 50%;"></div>
+                    </div>
+                    <div class="spectrum-labels">
+                        <span class="real-label">🟢 Authentic (REAL)</span>
+                        <span class="fake-label">🔴 Fabricated (FAKE)</span>
+                    </div>
+                </div>
+
+                <!-- Key Influential Indicators -->
+                <div id="keywordsCard" class="keywords-card hidden">
+                    <div class="sub-heading">Key Influential Linguistic Indicators</div>
+                    <p class="keywords-desc">Terms detected in the input that most influenced the classification outcome:</p>
+                    <div id="keywordsList" class="keywords-tags"></div>
+                </div>
+            </div>
+
+            <!-- Analysis History -->
+            <div id="historySection" class="history-container hidden">
+                <div class="history-header">
+                    <h3>Recent Checks This Session</h3>
+                    <button class="btn-text" onclick="clearHistory()">Clear History</button>
+                </div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </main>
+
+        <!-- Information & Specs Footer -->
+        <footer class="footer">
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <span class="spec-title">Algorithm</span>
+                    <span class="spec-value">TF-IDF N-Grams + Logistic Regression</span>
+                </div>
+                <div class="spec-card">
+                    <span class="spec-title">Features</span>
+                    <span class="spec-value">Unigram / Bigram Vectorizer</span>
+                </div>
+                <div class="spec-card">
+                    <span class="spec-title">Model Status</span>
+                    <span class="spec-value highlight">Trained & Calibrated</span>
+                </div>
+            </div>
+            <p class="copyright">Built with Python, Flask, Scikit-learn & Modern Web Standards • Ready for Production Deployment</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
